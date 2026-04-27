@@ -1,11 +1,14 @@
 "use client";
 
-import { SignUpButton, useClerk } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 function Navbar() {
   const [signedOut, setSignedOut] = useState(false);
+
+  const router = useRouter();
 
   const handleSignOut = () => {
     setSignedOut(true);
@@ -27,9 +30,15 @@ function Navbar() {
           <Button className="menu-items text-3xs">Pricing</Button>
           <Button className="menu-items text-3xs">Marketplace</Button>
         </div>
-        <SignUpButton>
-          <Button className="primary-btn text-3xs!">Sign up</Button>
-        </SignUpButton>
+
+        <Button
+          type="button"
+          onClick={() => router.push("/select-role")}
+          className="primary-btn text-3xs!"
+        >
+          Sign up
+        </Button>
+
         <Button
           onClick={handleSignOut}
           className="light-btn text-3xs flex items-center gap-2 transition-all duration-300"

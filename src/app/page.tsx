@@ -7,22 +7,8 @@ import Featured from "@/components/Featured";
 import { subParagraphs } from "@/lib/constants/textLayouts";
 import Image from "next/image";
 import InfoCard from "@/components/InfoCard";
-import { useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
-import { createUser } from "@/lib/createUser";
 
 export default function Home() {
-  const { user, isLoaded } = useUser();
-
-  useEffect(() => {
-    if (!isLoaded) return;
-
-    if (user) {
-      console.log("👀 Syncing User", user.id);
-      createUser(user);
-    }
-  }, [isLoaded, user?.id]);
-
   return (
     <main className="flex flex-col min-h-screen">
       <Navbar />

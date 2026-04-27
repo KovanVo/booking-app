@@ -4,6 +4,8 @@ import { db } from "@/lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
 
 export async function POST(req: Request) {
+  console.log("🚨 WEBHOOK HIT");
+
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
@@ -20,16 +22,11 @@ export async function POST(req: Request) {
   }
 
   const payload = await req.text();
-
   const wh = new Webhook(WEBHOOK_SECRET);
 
   type ClerkWebhookEvent = {
     type: string;
-    data: {
-      id: string;
-      first_name?: string | null;
-      email_addresses?: { email_address: string }[];
-    };
+    data: any; // keep flexible (important)
   };
 
   let event: ClerkWebhookEvent;
@@ -50,17 +47,38 @@ export async function POST(req: Request) {
     const user = event.data;
 
     console.log("🔥 New user from Clerk:", user.id);
+    console.log("📍 Writing user:", user.id);
+    console.log("📦 FULL USER DATA:", JSON.stringify(user, null, 2));
 
-    const primaryEmail = user.email_addresses?.[0]?.email_address;
-    if (!primaryEmail) {
-      return new Response("Missing user email", { status: 400 });
+    let primaryEmail: string | null = null;
+
+    // ✅ Try to get email normally
+    if (user.email_addresses && user.email_addresses.length > 0) {
+      const match = user.email_addresses.find(
+        (email: any) => email.id === user.primary_email_address_id,
+      );
+      primaryEmail = match?.email_address || null;
     }
 
-    await setDoc(doc(db, "users", user.id), {
-      email: primaryEmail,
-      name: user.first_name || "",
-      createdAt: new Date(),
-    });
+    // ⚠️ Fallback if missing
+    if (!primaryEmail) {
+      console.log("⚠️ No email found in webhook payload");
+      primaryEmail = "unknown@email.com";
+    }
+
+    const role =
+      user.unsafe_metadata?.role || user.public_metadata?.role || "customer";
+
+    await setDoc(
+      doc(db, "users", user.id),
+      {
+        email: primaryEmail,
+        name: user.first_name || "",
+        role,
+        createdAt: new Date(),
+      },
+      { merge: true },
+    );
 
     console.log("✅ User saved to Firebase");
   }
