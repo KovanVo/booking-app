@@ -15,7 +15,7 @@ export async function createUser(user: any) {
       email: user.emailAddresses[0].emailAddress,
       name: user.firstName || "",
       createdAt: new Date(),
-    });
+    }, {merge:true});
   } catch (error) {
     console.error("Error creating user:", error);
   }

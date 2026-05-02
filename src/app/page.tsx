@@ -8,7 +8,47 @@ import { subParagraphs } from "@/lib/constants/textLayouts";
 import Image from "next/image";
 import InfoCard from "@/components/InfoCard";
 
+import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createUser } from "@/lib/createUser";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
 export default function Home() {
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoaded || !user) return;
+
+    const checkUser = async () => {
+      // ensure user exists in Firebase
+      await createUser(user);
+
+      const userRef = doc(db, "users", user.id);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) return;
+
+      const userData = userSnap.data();
+
+      const isOwner = userData.role === "owner";
+      const hasBusiness = !!userData.businessId;
+
+      if (isOwner) {
+        console.log("🚀 Redirecting owner to onboarding");
+        if (!hasBusiness) {
+          router.replace("/onboarding/owner");
+        } else {
+          router.replace("/owner");
+        }
+      }
+    };
+
+    checkUser();
+  }, [isLoaded, user]);
+
   return (
     <main className="flex flex-col min-h-screen">
       <Navbar />
