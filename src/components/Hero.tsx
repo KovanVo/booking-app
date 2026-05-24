@@ -30,14 +30,14 @@ function Hero() {
               alt="nail employee"
               width={420}
               height={280}
-              className="absolute right-0 top-20 w-[60%] rounded-3xl object-cover transparent-border"
+              className="absolute right-0 top-20 w-[60%] rounded-3xl object-cover transparent-border border-10"
             />
             <Image
               src="/images/hair-employee.png"
               alt="hair employee"
               width={420}
               height={280}
-              className="absolute left-0 bottom-12 w-[60%] rounded-3xl object-cover transparent-border"
+              className="absolute left-0 bottom-12 w-[60%] rounded-3xl object-cover transparent-border border-10"
             />
           </div>
         </div>

@@ -13,10 +13,8 @@ import {
   doc,
 } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
-import { createUser } from "@/lib/createUser";
 import { useRouter } from "next/navigation";
-
-type AccessState = "checking" | "authorized" | "unauthorized";
+import Navbar from "@/components/Navbar";
 
 export default function OwnerDashboard() {
   const { user, isLoaded } = useUser();
@@ -124,97 +122,105 @@ export default function OwnerDashboard() {
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Owner Dashboard</h1>
-
-      {/* Business */}
-      {business && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold">{business.name}</h2>
-          <p className="text-gray-600">{business.description}</p>
+    <div>
+      <nav className="sticky top-0 z-50  py-3 px-20 transparent2 rounded-b-4xl">
+        <div className="flex justify-between items-center h-15">
+          <div className="p-4 h3 h-full" onClick={() => router.push("/")}>
+            KTT Booking
+          </div>
         </div>
-      )}
+      </nav>
 
-      {/* Services */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Services</h2>
-
-        {services.length === 0 ? (
-          <p>No services yet.</p>
-        ) : (
-          <ul className="space-y-2">
-            {services.map((service) => (
-              <li
-                key={service.id}
-                className="border p-3 rounded flex justify-between"
-              >
-                <span>{service.name}</span>
-                <span>
-                  ${service.price} • {service.duration} mins
-                </span>
-              </li>
-            ))}
-          </ul>
+      <section className="mx-40 pt-10 pb-50">
+        {/* Business */}
+        {business && (
+          <div className="mb-6">
+            <h2 className="text-4xl font-semibold">{business.name}</h2>
+            <p className="text-gray-600">{business.description}</p>
+          </div>
         )}
-      </div>
 
-      {/* Add Service */}
-      <form onSubmit={handleAddService} className="space-y-2">
-        <h3 className="font-semibold">Add Service</h3>
+        {/* Services */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">Services</h2>
 
-        <input
-          type="text"
-          placeholder="Service name"
-          value={newService.name}
-          onChange={(e) =>
-            setNewService({ ...newService, name: e.target.value })
-          }
-          className="w-full border p-2 rounded"
-          required
-        />
+          {services.length === 0 ? (
+            <p>No services yet.</p>
+          ) : (
+            <ul className="space-y-2">
+              {services.map((service) => (
+                <li
+                  key={service.id}
+                  className="border p-3 rounded flex justify-between"
+                >
+                  <span>{service.name}</span>
+                  <span>
+                    ${service.price} • {service.duration} mins
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-        <input
-          type="number"
-          placeholder="Price"
-          value={newService.price}
-          onChange={(e) =>
-            setNewService({ ...newService, price: e.target.value })
-          }
-          className="w-full border p-2 rounded"
-          required
-        />
+        {/* Add Service */}
+        <form onSubmit={handleAddService} className="space-y-2">
+          <h3 className="font-semibold">Add Service</h3>
 
-        <input
-          type="number"
-          placeholder="Duration (mins)"
-          value={newService.duration}
-          onChange={(e) =>
-            setNewService({ ...newService, duration: e.target.value })
-          }
-          className="w-full border p-2 rounded"
-          required
-        />
+          <input
+            type="text"
+            placeholder="Service name"
+            value={newService.name}
+            onChange={(e) =>
+              setNewService({ ...newService, name: e.target.value })
+            }
+            className="w-full border p-2 rounded"
+            required
+          />
 
-        <Button type="submit" disabled={loading} className="primary-btn">
-          {loading ? "Adding..." : "Add Service"}
-        </Button>
+          <input
+            type="number"
+            placeholder="Price"
+            value={newService.price}
+            onChange={(e) =>
+              setNewService({ ...newService, price: e.target.value })
+            }
+            className="w-full border p-2 rounded"
+            required
+          />
 
-        <Button
-          type="button"
-          onClick={handleSignOut}
-          className="light-btn text-3xs flex items-center gap-2 transition-all duration-300 border border-brand"
-        >
-          {signedOut ? "Signed out" : "Sign out"}
+          <input
+            type="number"
+            placeholder="Duration (mins)"
+            value={newService.duration}
+            onChange={(e) =>
+              setNewService({ ...newService, duration: e.target.value })
+            }
+            className="w-full border p-2 rounded"
+            required
+          />
 
-          <span
-            className={`transition-all duration-300 ${
-              signedOut ? "opacity-100 scale-100" : "opacity-0 scale-50"
-            }`}
+          <Button type="submit" disabled={loading} className="primary-btn">
+            {loading ? "Adding..." : "Add Service"}
+          </Button>
+
+          <Button
+            type="button"
+            onClick={handleSignOut}
+            className="light-btn text-3xs flex items-center gap-2 transition-all duration-300 border border-brand"
           >
-            ✓
-          </span>
-        </Button>
-      </form>
+            {signedOut ? "Signed out" : "Sign out"}
+
+            <span
+              className={`transition-all duration-300 ${
+                signedOut ? "opacity-100 scale-100" : "opacity-0 scale-50"
+              }`}
+            >
+              ✓
+            </span>
+          </Button>
+        </form>
+      </section>
     </div>
   );
 }

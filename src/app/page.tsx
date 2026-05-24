@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/createUser";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const { user, isLoaded } = useUser();
@@ -32,6 +33,12 @@ export default function Home() {
       if (!userSnap.exists()) return;
 
       const userData = userSnap.data();
+
+      const isCustomer = userData.role === "customer";
+
+      if (isCustomer) {
+        router.replace("/marketplace");
+      }
 
       const isOwner = userData.role === "owner";
       const hasBusiness = !!userData.businessId;
@@ -194,14 +201,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer>
-        <div className="mx-auto">
-          <div className="flex my-0 items-center justify-between px-8 py-6 text-white bg-black">
-            <h2 className="font-bold">English</h2>
-            <h3 className="text-sm">© 2026 KTT Booking</h3>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }

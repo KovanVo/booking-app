@@ -197,6 +197,6 @@
   }
 
   .transparent-border {
-    @apply border-10  shadow-md ring-1 ring-gray-500/8 backdrop-blur-[3px] border-white/20;
+    @apply shadow-md ring-1 ring-gray-500/8 backdrop-blur-[3px] border-white/20;
   }
 }

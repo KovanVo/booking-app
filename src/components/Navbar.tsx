@@ -28,7 +28,14 @@ function Navbar() {
           <Button className="menu-items text-3xs">Business types</Button>
           <Button className="menu-items text-3xs">Features</Button>
           <Button className="menu-items text-3xs">Pricing</Button>
-          <Button className="menu-items text-3xs">Marketplace</Button>
+
+          <Button
+            type="button"
+            onClick={() => router.push("/marketplace")}
+            className="menu-items text-3xs"
+          >
+            Marketplace
+          </Button>
         </div>
 
         <Button
