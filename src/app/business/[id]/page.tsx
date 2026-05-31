@@ -12,12 +12,13 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 
 export default function businessPage() {
   const { id } = useParams();
+  const router = useRouter();
 
   const [business, setBusiness] = useState<any>(null);
   const [services, setServices] = useState<any[]>([]);
@@ -58,8 +59,6 @@ export default function businessPage() {
     fetchBusinessAndServices();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <div>
       <nav className="sticky top-0 z-50 flex justify-between items-center py-3 px-20 transparent2 rounded-b-4xl">
@@ -96,7 +95,14 @@ export default function businessPage() {
                     </div>
 
                     <div>
-                      <Button className="w-25 border border-brand/50 rounded-full h-10 primary-btn">
+                      <Button
+                        onClick={() =>
+                          router.push(
+                            `/business/${id}/book?serviceId=${service.id}`,
+                          )
+                        }
+                        className="w-25 border border-brand/50 rounded-full h-10 primary-btn"
+                      >
                         Book
                       </Button>
                     </div>

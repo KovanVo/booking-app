@@ -191,12 +191,18 @@
     @apply bg-white/20 backdrop-blur-[10px] border-2 shadow-md border-white/20;
   }
 
+  .transparent-border {
+    @apply shadow-md ring-1 ring-gray-500/8 backdrop-blur-[3px] border-white/20;
+  }
+
   /* Hero */
   .hero {
     @apply rounded-b-4xl py-16 sm:py-20 lg:py-58 -mt-25;
   }
 
-  .transparent-border {
-    @apply shadow-md ring-1 ring-gray-500/8 backdrop-blur-[3px] border-white/20;
+  /* Inputs */
+
+  .primary-input {
+    @apply w-full lg:w-100 p-2 rounded border-brand bg-white;
   }
 }
