@@ -35,16 +35,17 @@ export default function Marketplace() {
     fetchBusinesses();
   }, []);
 
-  
-
   return (
     <div>
       <nav className="sticky top-0 z-50 py-3 px-20 transparent2 rounded-b-4xl -mt-25">
         <div className="flex justify-between items-center h-15">
-          <div className="p-4 h3 h-full cursor-pointer" onClick={() => router.push("/")}>
+          <div
+            className="p-4 h3 h-full cursor-pointer"
+            onClick={() => router.push("/marketplace")}
+          >
             KTT Booking
           </div>
-          <div >
+          <div>
             <ProfileButton />
           </div>
         </div>

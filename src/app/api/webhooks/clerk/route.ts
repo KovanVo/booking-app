@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { Webhook } from "svix";
 import { db } from "@/lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   console.log("🚨 WEBHOOK HIT");
@@ -81,6 +82,18 @@ export async function POST(req: Request) {
     );
 
     console.log("✅ User saved to Firebase");
+
+    try {
+      const client = await clerkClient();
+      await client.users.updateUserMetadata(user.id, {
+        publicMetadata: {
+          role: role,
+        },
+      });
+      console.log(`✅ Clerk publicMetadata synced: role = "${role}"`);
+    } catch (clerkError) {
+      console.error("❌ Failed to update Clerk metadata:", clerkError);
+    }
   }
 
   return new Response("OK", { status: 200 });

@@ -9,43 +9,44 @@ import Image from "next/image";
 import InfoCard from "@/components/InfoCard";
 
 import { useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/createUser";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { getUserRole } from "@/lib/getUserRole";
 import Footer from "@/components/Footer";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Home() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
 
+  const [checkingRole, setCheckingRole] = useState(true);
+
   useEffect(() => {
-    if (!isLoaded || !user) return;
+    if (!isLoaded) return;
+    if (!user) {
+      setCheckingRole(false);
+      return;
+    }
 
     const checkUser = async () => {
       // ensure user exists in Firebase
+
       await createUser(user);
 
-      const userRef = doc(db, "users", user.id);
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) return;
-
-      const userData = userSnap.data();
-
-      const isCustomer = userData.role === "customer";
-
-      if (isCustomer) {
-        router.replace("/marketplace");
+      const { role, businessId } = await getUserRole(user.id);
+      if (!role) {
+        setCheckingRole(false);
+        return;
       }
-
-      const isOwner = userData.role === "owner";
-      const hasBusiness = !!userData.businessId;
-
-      if (isOwner) {
-        console.log("🚀 Redirecting owner to onboarding");
-        if (!hasBusiness) {
+      if (role === "customer") {
+        router.replace("/marketplace");
+        return;
+      }
+      if (role === "owner") {
+        if (!businessId) {
           router.replace("/onboarding/owner");
         } else {
           router.replace("/owner");
@@ -55,6 +56,10 @@ export default function Home() {
 
     checkUser();
   }, [isLoaded, user]);
+
+  if (!isLoaded || (user && checkingRole)) {
+    return <LoadingScreen />;
+  }
 
   return (
     <main className="flex flex-col min-h-screen">

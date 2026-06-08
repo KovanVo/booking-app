@@ -16,6 +16,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import LoadingScreen from "@/components/LoadingScreen";
+import { getUserRole } from "@/lib/getUserRole";
 
 export default function OwnerDashboard() {
   const { user, isLoaded } = useUser();
@@ -30,6 +32,9 @@ export default function OwnerDashboard() {
 
   const [bookings, setBookings] = useState<any[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
+
+  const [authorized, setAuthorized] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
 
   const handleSignOut = () => {
     setSignedOut(true);
@@ -50,17 +55,14 @@ export default function OwnerDashboard() {
     if (!isLoaded || !user) return;
 
     const init = async () => {
-      const userRef = doc(db, "users", user.id);
-      const userSnap = await getDoc(userRef);
+      const { role } = await getUserRole(user.id);
 
-      if (!userSnap.exists()) return;
-
-      const userData = userSnap.data();
-
-      if (userData.role !== "owner") {
-        router.push("/sign-up");
+      if (role !== "owner") {
+        router.replace("/marketplace");
         return;
       }
+
+      setAuthorized(true);
 
       // 🔥 ONLY fetch if authorized
       const businessQuery = query(
@@ -111,6 +113,7 @@ export default function OwnerDashboard() {
           console.log(error);
         } finally {
           setLoadingBookings(false);
+          setCheckingAccess(false);
         }
       }
     };
@@ -145,6 +148,17 @@ export default function OwnerDashboard() {
       setLoading(false);
     }
   };
+
+  if (!isLoaded || checkingAccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingScreen />
+      </div>
+    );
+  }
+  if (!authorized) {
+    return null; // redirect already happening
+  }
 
   return (
     <div>

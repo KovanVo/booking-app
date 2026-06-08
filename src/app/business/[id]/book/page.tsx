@@ -16,6 +16,7 @@ import {
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Book() {
   const { user } = useUser();
@@ -220,7 +221,7 @@ export default function Book() {
     String(today.getDate()).padStart(2, "0"),
   ].join("-");
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingScreen />;
   if (error) return <div>{error}</div>;
   if (!business || !service) return <div>Not found</div>;
 
