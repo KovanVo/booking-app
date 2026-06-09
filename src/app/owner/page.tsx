@@ -15,7 +15,6 @@ import {
 } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import LoadingScreen from "@/components/LoadingScreen";
 import { getUserRole } from "@/lib/getUserRole";
 
