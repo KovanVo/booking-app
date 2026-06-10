@@ -76,7 +76,10 @@ export default function Book() {
           ...serviceSnap.data(),
         };
 
-        if (serviceData.businessId !== businessId) {
+        if (
+          (serviceData as unknown as { businessId: string }).businessId !==
+          businessId
+        ) {
           setError("The service does not belong to this bussiness.");
           return;
         }
@@ -206,8 +209,9 @@ export default function Book() {
       const slotStart = slot;
       const slotEnd = new Date(slot.getTime() + durationMs);
 
-      const isTaken = existingBookings.some((booking) =>
-        overlaps(slotStart, slotEnd, booking),
+      const isTaken = existingBookings.some(
+        (booking: { startAt: Date; endAt: Date; status?: string }) =>
+          overlaps(slotStart, slotEnd, booking),
       );
 
       return !isTaken;
