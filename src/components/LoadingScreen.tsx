@@ -9,6 +9,7 @@ export default function LoadingScreen() {
         width={50}
         height={50}
         className="animate-spin invert"
+        loading="lazy"
       />
     </div>
   );

@@ -13,10 +13,6 @@ const isOwnerRoute = createRouteMatcher([
   "/owner(.*)",
   "/onboarding/owner(.*)",
 ]);
-const isCustomerRoute = createRouteMatcher([
-  "/marketplace(.*)",
-  "/business(.*)",
-]);
 
 export default clerkMiddleware(async (auth, request: NextRequest) => {
   const { userId, sessionClaims } = await auth();
